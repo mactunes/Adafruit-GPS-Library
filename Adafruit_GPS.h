@@ -21,13 +21,7 @@ All text above must be included in any redistribution
 #ifndef _ADAFRUIT_GPS_H
 #define _ADAFRUIT_GPS_H
 
-#ifdef __AVR__
-  #if ARDUINO >= 100
-    #include <SoftwareSerial.h>
-  #else
-    #include <NewSoftSerial.h>
-  #endif
-#endif
+#include <Arduino.h>
 
 // different commands to set the update rate from once a second (1 Hz) to 10 times a second (10Hz)
 // Note that these only control the rate at which the position is echoed, to actually speed up the
@@ -86,28 +80,12 @@ All text above must be included in any redistribution
 // how long to wait when we're looking for a response
 #define MAXWAITSENTENCE 5
 
-#if ARDUINO >= 100
- #include "Arduino.h"
-#if defined (__AVR__) && !defined(__AVR_ATmega32U4__)
- #include "SoftwareSerial.h"
-#endif
-#else
- #include "WProgram.h"
- #include "NewSoftSerial.h"
-#endif
-
 
 class Adafruit_GPS {
  public:
   void begin(uint16_t baud); 
 
-#ifdef __AVR__
-  #if ARDUINO >= 100 
-    Adafruit_GPS(SoftwareSerial *ser); // Constructor when using SoftwareSerial
-  #else
-    Adafruit_GPS(NewSoftSerial  *ser); // Constructor when using NewSoftSerial
-  #endif
-#endif
+
   Adafruit_GPS(HardwareSerial *ser); // Constructor when using HardwareSerial
 
   char *lastNMEA(void);
@@ -118,11 +96,8 @@ class Adafruit_GPS {
   
   void pause(boolean b);
 
-  boolean parseNMEA(char *response);
-  uint8_t parseHex(char c);
 
   char read(void);
-  boolean parse(char *);
   void interruptReads(boolean r);
 
   boolean wakeup(void);
@@ -154,13 +129,7 @@ class Adafruit_GPS {
   boolean paused;
   
   uint8_t parseResponse(char *response);
-#ifdef __AVR__
-  #if ARDUINO >= 100
-    SoftwareSerial *gpsSwSerial;
-  #else
-    NewSoftSerial  *gpsSwSerial;
-  #endif
-#endif
+
   HardwareSerial *gpsHwSerial;
 };
 
